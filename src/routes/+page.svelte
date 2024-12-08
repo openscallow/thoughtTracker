@@ -1,13 +1,13 @@
 <script lang="ts">
     import { date } from "$lib/date";
-    import Myname from './component.svelte'
+    
     if(!localStorage.getItem('thoughts')){
         localStorage.setItem('thoughts','{}') 
     }
     let thoughts = JSON.parse(localStorage.getItem('thoughts'))
 
 
-    let thought : Number = $state()
+    let thought:string;
 
     function initializeThouht(event: MouseEvent){
         thoughts = JSON.parse(localStorage.getItem('thoughts'))
@@ -95,11 +95,38 @@
 <input type="text" name="thought" bind:value={thought}>
 <button type="button" onclick={initializeThouht}>create thought</button>
 
+<div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
-    <h1 class="key">{key}</h1>
-    <button onclick={()=>{decrement(key)}}>-</button>
-    <input type="number" min="0" value={value.count}>
-    <button onclick={()=>{increment(key)}}>+</button>
+    <div>
+        <h1 class="key">{key}</h1>
+        <button onclick={()=>{decrement(key)}}>-</button>
+        <span class="counter">{value.count}</span>
+        <button onclick={()=>{increment(key)}}>+</button>
+    </div>
 {/each}
+</div>
 
 <button onclick={()=>{reset()}}>reset</button>
+
+<style>
+    .grid{
+        display: grid;
+        place-items: center;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .grid button{
+        font-size: 20px;
+        padding: 4px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .counter {
+        display: inline-block;
+        width: 3ch; 
+        padding: 0.5em;
+    }
+
+    
+</style>

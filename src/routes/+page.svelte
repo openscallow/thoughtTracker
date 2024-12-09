@@ -91,39 +91,54 @@
 
     console.log(date())
 </script>
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=refresh" />
 <input type="text" name="thought" bind:value={thought}>
 <button type="button" onclick={initializeThouht}>create thought</button>
 
 <div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
-    <div>
-        <h2 class="key">{key}</h2>
-        <button onclick={()=>{decrement(key)}}>-</button>
-        <span class="counter">{value.count}</span>
-        <button onclick={()=>{increment(key)}}>+</button>
+    <div class="card">
+        <div class="thought">
+            <p class="key">{key}</p>
+        </div>
+        <div class="buttons">
+            <button onclick={()=>{decrement(key)}}>-</button>
+            <span class="counter">{value.count}</span>
+            <button onclick={()=>{increment(key)}}>+</button>
+        </div>
     </div>
-{/each}
+{/each}               
 </div>
 
-<button onclick={()=>{reset()}}>reset</button>
+<button class="reset" onclick={()=>{reset()}}><span class="material-symbols-outlined">refresh</span>reset</button>
 
 <style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
     .grid{
         display: grid;
-        grid-row-gap: 4px;
+        grid-gap: 4px;
         place-items: center;
-        padding: 4px;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        padding: 2px;
+        margin-top: 4px;
+        grid-template-columns: 1fr 1fr;
     }
     
-    .grid div{
+    .card{display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        min-height: 180px;
+        width: 100%;
         padding: 6px;
         border: 1px solid black;
         border-radius: 4px;
     }
 
-    .grid h2{
+    .grid p{
+        width: 100%;
         font-size: 20px;
     }
     
@@ -139,4 +154,29 @@
         width: 3ch; 
         padding: 0.5em;
     }
+
+    .reset {
+    display: inline-flex; /* Ensures icon and text align inline */
+    align-items: center; /* Vertically centers icon and text */
+    padding: 8px 12px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reset:hover {
+    background-color: darkred;
+}
+
+.reset span.material-symbols-outlined {
+    margin-right: 8px; /* Adds spacing between icon and text */
+    font-size: 20px; /* Adjust icon size to match text */
+    vertical-align: middle; /* Ensures smooth alignment */
+}
+
 </style>

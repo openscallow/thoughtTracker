@@ -98,7 +98,7 @@
 <div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
     <div>
-        <h1 class="key">{key}</h1>
+        <h2 class="key">{key}</h2>
         <button onclick={()=>{decrement(key)}}>-</button>
         <span class="counter">{value.count}</span>
         <button onclick={()=>{increment(key)}}>+</button>
@@ -111,10 +111,22 @@
 <style>
     .grid{
         display: grid;
+        grid-row-gap: 4px;
         place-items: center;
+        padding: 4px;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
+    
+    .grid div{
+        padding: 6px;
+        border: 1px solid black;
+        border-radius: 4px;
+    }
 
+    .grid h2{
+        font-size: 20px;
+    }
+    
     .grid button{
         font-size: 20px;
         padding: 4px;
@@ -127,6 +139,4 @@
         width: 3ch; 
         padding: 0.5em;
     }
-
-    
 </style>

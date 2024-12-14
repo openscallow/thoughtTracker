@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    /* background-color: gray; */
+    /* background-image: linear-gradient(to right, red, orange); */
+    /* background-color: aqua; */
+}
+
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    padding: 1rem;
+}
+
+.container {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
+    border-radius: 15px;
+    backdrop-filter: blur(10px); /* Apply blur to the background */
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Subtle border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}

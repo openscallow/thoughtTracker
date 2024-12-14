@@ -1,21 +1,130 @@
 <script lang="ts">
     import { date } from "$lib/date";
+    import Chart from 'chart.js/auto';
+    import { onMount } from "svelte";
+    import './style.css'
+
     
-    if(!localStorage.getItem('thoughts')){
-        localStorage.setItem('thoughts','{}') 
+
+    onMount(() => {
+// Define the selected month and year (e.g., November 2024)
+const selectedMonth = 11; // November (use 1-based month numbering)
+const selectedYear = 2024;
+
+// Generate the data array with dates from 1 to 31
+const data = Array.from({ length: 31 }, (_, i) => ({
+    date: i + 1, // Dates from 1 to 31
+    count: null, // Initialize count to null
+}));
+
+for (const key in thoughts) {
+    if (Object.prototype.hasOwnProperty.call(thoughts, key)) {
+        for (const secondKey in thoughts[key].records) {
+            if (Object.prototype.hasOwnProperty.call(thoughts[key].records, secondKey)) {
+                // Parse the date string to extract the month, day, and year
+                const dateParts = secondKey.split('/'); // Assuming 'MM/DD/YYYY' format
+                const day = parseInt(dateParts[0], 10); // Extract the month as an integer
+                const month = parseInt(dateParts[1], 10); // Extract the day as an integer
+                const year = parseInt(dateParts[2], 10); // Extract the year as an integer
+
+                // Process only if the record is in the selected month and year
+                if (month === selectedMonth && year === selectedYear) {
+                    // Find the corresponding entry in the `data` array
+                    const dataEntry = data.find(d => d.date === day);
+                    if (dataEntry) {
+                        // Update the count in the `data` array
+                        dataEntry.count = (dataEntry.count || 0) + thoughts[key].records[secondKey].count;
+
+                        console.log(
+                            `Updated count for date ${day}/${selectedMonth}/${selectedYear}:`,
+                            dataEntry.count
+                        );
+                    }
+                }
+            }
+        }
     }
-    let thoughts = JSON.parse(localStorage.getItem('thoughts'))
+}
+
+// Log the updated data array for the selected month
+console.log(data);
 
 
-    let thought:string;
+        console.log( $state.snapshot(thoughts))
+        const thoughtVisual = document.getElementById('lineChart'); // Ensure DOM is ready
+        if (thoughtVisual) {
+            // Create data for 31 days with random counts (replace this with your real data)
+            
 
-    function initializeThouht(event: MouseEvent){
-        thoughts = JSON.parse(localStorage.getItem('thoughts'))
-        thoughts[thought] = {count: 0, records:{}}
+            new Chart(thoughtVisual, {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.date),
+                    datasets: [
+                        {
+                            label: 'Daily Counts',
+                            data: data.map(row => row.count),
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { enabled: true },
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                      
+                            ticks: {
+                                autoSkip: true, // Show all labels
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                       
+                        },
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            left: 10,
+                            right: 10,
+                            bottom: 10,
+                        },
+                    },
+                    barPercentage: 0.6, // Controls the width of bars
+                    categoryPercentage: 0.8, // Space between bars
+                },
+            });
+        } else {
+            console.error('Canvas element with id "lineChart" not found.');
+        }
+    });
+
+ 
+    // Ensure 'thoughts' key exists on localStorage
+    function initializeStorage(){
+        if(!localStorage.getItem('thoughts')){
+            localStorage.setItem('thoughts', '{}')
+        }
+    }
+    initializeStorage()
+
+
+    let thoughts = $state(JSON.parse(localStorage.getItem('thoughts')))
+    let newThought:string = $state();
+    
+    function addThought(){
+        thoughts[newThought] = {count: 0, records:{}}
         localStorage.setItem('thoughts',JSON.stringify(thoughts))
-        console.log(JSON.parse(localStorage.getItem('thoughts')))
-        location.reload()
 
+        // Reasign 'thoughts' to ensure the state is in sync with localStorage
+        thoughts = JSON.parse(localStorage.getItem('thoughts'))
     }
 
     function increment(key){
@@ -92,13 +201,13 @@
     console.log(date())
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=refresh" />
-<input type="text" name="thought" bind:value={thought}>
-<button type="button" onclick={initializeThouht}>create thought</button>
+<input type="text" name="newThought" bind:value={newThought}>
+<button type="button" onclick={addThought}>create newThought</button>
 
 <div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
     <div class="card">
-        <div class="thought">
+        <div class="newThought">
             <p class="key">{key}</p>
         </div>
         <div class="buttons">
@@ -111,72 +220,6 @@
 </div>
 
 <button class="reset" onclick={()=>{reset()}}><span class="material-symbols-outlined">refresh</span>reset</button>
-
-<style>
-    *{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    .grid{
-        display: grid;
-        grid-gap: 4px;
-        place-items: center;
-        padding: 2px;
-        margin-top: 4px;
-        grid-template-columns: 1fr 1fr;
-    }
-    
-    .card{display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        min-height: 180px;
-        width: 100%;
-        padding: 6px;
-        border: 1px solid black;
-        border-radius: 4px;
-    }
-
-    .grid p{
-        width: 100%;
-        font-size: 20px;
-    }
-    
-    .grid button{
-        font-size: 20px;
-        padding: 4px;
-        width: 40px;
-        height: 40px;
-    }
-
-    .counter {
-        display: inline-block;
-        width: 3ch; 
-        padding: 0.5em;
-    }
-
-    .reset {
-    display: inline-flex; /* Ensures icon and text align inline */
-    align-items: center; /* Vertically centers icon and text */
-    padding: 8px 12px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: 'Arial', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.reset:hover {
-    background-color: darkred;
-}
-
-.reset span.material-symbols-outlined {
-    margin-right: 8px; /* Adds spacing between icon and text */
-    font-size: 20px; /* Adjust icon size to match text */
-    vertical-align: middle; /* Ensures smooth alignment */
-}
-
-</style>
+<div style="width: 100%; max-width: 600px; margin: auto;">
+    <canvas id="lineChart"></canvas>
+</div>

@@ -1,8 +1,10 @@
+
 <script lang="ts">
     import { date } from "$lib/date";
     import Chart from 'chart.js/auto';
     import { onMount } from "svelte";
     import './style.css'
+    import { CirclePlus, RefreshCcw } from 'lucide-svelte';
 
     
 
@@ -45,12 +47,6 @@ for (const key in thoughts) {
         }
     }
 }
-
-// Log the updated data array for the selected month
-console.log(data);
-
-
-        console.log( $state.snapshot(thoughts))
         const thoughtVisual = document.getElementById('lineChart'); // Ensure DOM is ready
         if (thoughtVisual) {
             // Create data for 31 days with random counts (replace this with your real data)
@@ -125,6 +121,7 @@ console.log(data);
 
         // Reasign 'thoughts' to ensure the state is in sync with localStorage
         thoughts = JSON.parse(localStorage.getItem('thoughts'))
+        newThought = ''
     }
 
     function increment(key){
@@ -150,7 +147,7 @@ console.log(data);
         thoughts[key].records[dt].record.push(Date()) 
         console.log(thoughts[key].count)
         localStorage.setItem('thoughts', JSON.stringify(thoughts))
-        location.reload()
+        thoughts = JSON.parse(localStorage.getItem('thoughts'))
     }
 
     function decrement(key){
@@ -183,7 +180,7 @@ console.log(data);
         
         console.log(thoughts[key].count)
         localStorage.setItem('thoughts', JSON.stringify(thoughts))
-        location.reload()
+        thoughts = JSON.parse(localStorage.getItem('thoughts'))
     }
 
     function reset() {
@@ -193,16 +190,21 @@ console.log(data);
         console.log(key.innerText);
         thoughts[key.innerText].count = 0
         localStorage.setItem('thoughts', JSON.stringify(thoughts))
-        location.reload()
         });
+        thoughts = JSON.parse(localStorage.getItem('thoughts'))
     }
     
 
-    console.log(date())
+ 
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=refresh" />
-<input type="text" name="newThought" bind:value={newThought}>
-<button type="button" onclick={addThought}>create newThought</button>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add_circle" />
+<div class="inputContainer">
+    <div class="inputGroup">
+        <input type="text" name="newThought" bind:value={newThought} placeholder="Create new thought">
+        <button type="button" onclick={addThought}><CirclePlus class="material-symbols-outlined"/></button>
+    </div>  
+</div>
 
 <div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
@@ -219,7 +221,9 @@ console.log(data);
 {/each}               
 </div>
 
-<button class="reset" onclick={()=>{reset()}}><span class="material-symbols-outlined">refresh</span>reset</button>
+<div class="resetContainer">
+    <button class="reset" onclick={()=>{reset()}}><RefreshCcw class="material-symbols-outlined"></RefreshCcw>reset</button>
+</div>
 <div style="width: 100%; max-width: 600px; margin: auto;">
     <canvas id="lineChart"></canvas>
 </div>

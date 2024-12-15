@@ -1,21 +1,68 @@
-*{
+:root {
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --background-color: rgba(255, 255, 255, 0.5);
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-body{
-    background: linear-gradient(135deg, #c2e9fb 0%,  #a1c4fd 100%);
+
+body {
+    background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
 }
-.grid{
+
+.inputContainer {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    padding: 0.8rem;
+    border-radius: 2.7rem;
+    background: var(--background-color);
+    backdrop-filter: blur(30px);
+    box-shadow: var(--box-shadow);
+    justify-content: space-around;
+}
+
+.inputGroup input {
+    border: none;
+    outline: none;
+    background: none;
+    padding-left: 4px;
+    border-radius: 2rem;
+}
+
+.inputGroup button {
+    color: rgba(247, 82, 82, 0.858);
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.inputGroup button:active {
+    color: black;
+}
+
+.inputGroup .material-symbols-outlined {
+    vertical-align: middle;
+}
+
+.grid {
     display: grid;
     grid-gap: 0.5rem;
     place-items: center;
     padding: 0.5rem;
     margin-top: 4px;
-    grid-template-columns: 1fr 1fr;   
+    grid-template-columns: 1fr 1fr;
 }
 
-.card{
+.card {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -23,17 +70,17 @@ body{
     width: 100%;
     padding: 6px;
     border-radius: 4px;
-    background:rgba(255, 255, 255, 0.5);
+    background: var(--background-color);
     backdrop-filter: blur(30px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--box-shadow);
 }
 
-.grid p{
+.grid p {
     width: 100%;
     font-size: 20px;
 }
 
-.grid button{
+.grid button {
     font-size: 20px;
     padding: 4px;
     width: 40px;
@@ -42,30 +89,38 @@ body{
 
 .counter {
     display: inline-block;
-    width: 3ch; 
+    width: 3ch;
     padding: 0.5em;
 }
 
+.resetContainer {
+    padding: 0.5rem;
+}
+
 .reset {
-display: inline-flex; /* Ensures icon and text align inline */
-align-items: center; /* Vertically centers icon and text */
-padding: 8px 12px;
-background-color: red;
-color: white;
-border: none;
-border-radius: 5px;
-font-size: 16px;
-font-family: 'Arial', sans-serif;
-cursor: pointer;
-transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    background-color: red;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .reset:hover {
-background-color: darkred;
+    background-color: darkred;
 }
 
-.reset span.material-symbols-outlined {
-margin-right: 8px; /* Adds spacing between icon and text */
-font-size: 20px; /* Adjust icon size to match text */
-vertical-align: middle; /* Ensures smooth alignment */
+.reset .material-symbols-outlined {
+    margin-right: 8px;
+    font-size: 20px;
+    vertical-align: middle;
 }

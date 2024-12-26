@@ -1,7 +1,9 @@
-// place files you want to import through the `$lib` alias in this folder.
-export function date() {
-    let dateObj = new Date()
-    let date = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}`
-
-    return date;
+/**
+ * Returns the current date in the format "DD/MM/YYYY".
+ * @returns {string} The formatted date string.
+ */
+export function date(): string {
+    const dateObj: Date = new Date();
+    const formattedDate: string = `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`;
+    return formattedDate;
 }

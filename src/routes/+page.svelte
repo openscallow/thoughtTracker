@@ -17,11 +17,13 @@
         };
     }
 
-    const selectedMonth = 11; // November
-    const selectedYear = 2024;
+    let selectedMonth: number = $state(12); // December
+    let selectedYear: number = $state(2024); 
 
-    let thoughts: Thoughts = {};
-    let newThought: string = "";
+    let thoughts: Thoughts = $state({});
+    let newThought: string = $state("");
+
+    let chart: Chart | null = null;
 
     // Helper to initialize `localStorage`
     function initializeStorage(): void {
@@ -92,6 +94,8 @@
 
     onMount(() => {
         initializeStorage();
+        selectedMonth = parseInt(localStorage.getItem("selectedMonth") ?? selectedYear.toString());
+        selectedYear = parseInt(localStorage.getItem("selectedYear") ?? selectedYear.toString());
 
         const data = Array.from({ length: 31 }, (_, i) => ({
             date: i + 1,
@@ -101,7 +105,7 @@
         for (const key in thoughts) {
             if (Object.prototype.hasOwnProperty.call(thoughts, key)) {
                 for (const secondKey in thoughts[key].records) {
-                    const [month, day, year] = secondKey.split("/").map(Number);
+                    const [day, month, year] = secondKey.split("/").map(Number);
 
                     if (month === selectedMonth && year === selectedYear) {
                         const dataEntry = data.find((d) => d.date === day);
@@ -115,7 +119,7 @@
 
         const thoughtVisual = document.getElementById("lineChart") as HTMLCanvasElement | null;
         if (thoughtVisual) {
-            new Chart(thoughtVisual, {
+            chart = new Chart(thoughtVisual, {
                 type: "bar",
                 data: {
                     labels: data.map((row) => row.date.toString()),
@@ -151,6 +155,18 @@
             console.error('Canvas element with id "lineChart" not found.');
         }
     });
+
+    function upDateMonth() {
+        let month = document.getElementById("month") as HTMLSelectElement;
+        localStorage.setItem("selectedMonth", month.value);
+        window.location.reload();
+    }
+
+    function upDateYear() {
+        let year = document.getElementById("year") as HTMLSelectElement;
+        localStorage.setItem("selectedYear", year.value);
+        window.location.reload();
+    }
 </script>
 <div class="inputContainer">
     <div class="inputGroup">
@@ -177,6 +193,20 @@
 <div class="resetContainer">
     <button class="reset" onclick={()=>{reset()}}><RefreshCcw class="material-symbols-outlined"></RefreshCcw>reset</button>
 </div>
+
+<select onchange={upDateMonth} id="month">
+    <option value=""></option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+</select>
+{selectedMonth}
+<select onchange={upDateYear} id="year">
+    <option value=""></option>
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+</select>
+{selectedYear}
 <div style="width: 100%; max-width: 600px; margin: auto;">
     <canvas id="lineChart"></canvas>
 </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { date } from "$lib/date";
-    import Chart from 'chart.js/auto';
+    import Chart, { elements } from 'chart.js/auto';
     import { onMount } from "svelte";
     import './style.css';
     import { CirclePlus, RefreshCcw } from 'lucide-svelte';
@@ -106,7 +106,7 @@
             if (Object.prototype.hasOwnProperty.call(thoughts, key)) {
                 for (const secondKey in thoughts[key].records) {
                     const [day, month, year] = secondKey.split("/").map(Number);
-
+                    console.log(month, selectedMonth, year, selectedYear);
                     if (month === selectedMonth && year === selectedYear) {
                         const dataEntry = data.find((d) => d.date === day);
                         if (dataEntry) {
@@ -196,10 +196,9 @@
 
 <select onchange={upDateMonth} id="month">
     <option value=""></option>
-    <option value="01">01</option>
-    <option value="10">10</option>
-    <option value="11">11</option>
-    <option value="12">12</option>
+    {#each {length:12} as _, month}
+        <option value={month+1}>{month+1}</option>
+    {/each}
 </select>
 {selectedMonth}
 <select onchange={upDateYear} id="year">

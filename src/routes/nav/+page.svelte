@@ -1,85 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Callow Business Card</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            background-color: #f9f9f9;
-        }
+<script>
+    import { onMount } from 'svelte';
+    
+    let count = $state(0); // Reactive variable for input value4
+    let precount = $derived.by(()=>{
+        if(count > 0) return count - 1
+    })
+    let nextcount = $derived(count + 1)
 
-        .card {
-            width: 90mm;
-            height: 50mm;
-            margin: 10px;
-            border: 2px solid transparent;
-            border-image: linear-gradient(90deg, #0066cc, #66b2ff);
-            border-image-slice: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 10px;
-            box-sizing: border-box;
-            background: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    let change = $state(0); // Reactive variable for input value
+    let deltaX =$state();
+    let display;   // Reference to the input element
+    let output;    // Reference to the output paragraph
 
-        .card h1 {
-            font-size: 1.5em;
-            color: #0066cc;
-            margin: 0;
-        }
+    let startX = 0; // Initial cursor X position
+    let isDragging = false; // State to track dragging
 
-        .card p {
-            font-size: 0.9em;
-            margin: 5px 0;
-            color: #333;
-        }
+    onMount(() => {
+        // Get references to DOM elements
+        display = document.getElementById('counts');
+        output = document.getElementById('output');
 
-        .card .highlight {
-            font-weight: bold;
-            color: #0066cc;
-        }
+        console.log(display);
 
-        .back {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
+        // When the user clicks on the div
+        display.addEventListener('mousedown', (event) => {
+            startX = event.clientX; // Record the initial cursor X position
+            isDragging = true;
+            console.log('Mouse down:', event);
+        });
 
-        .back p {
-            font-size: 1.2em;
-            color: #0066cc;
-        }
-    </style>
-</head>
-<body>
+        // Track mouse movement
+        document.addEventListener('mousemove', (event) => {
+            if (!isDragging) return; // Only track if dragging
+            console.log('Mouse move:', event);
+            const currentX = event.clientX; // Current cursor X position
+            deltaX = currentX - startX; // Calculate movement
+            if(deltaX > 0) {
+                count++
+            }else{
+                if(count > 0) count--
+            }
 
-    <!-- Front of the card -->
-    <div class="card">
-        <h1>Callow</h1>
-        <p>Your Go-To Stationery Store</p>
-        <p><span class="highlight">Website:</span> <a href="http://www.callow.in">www.callow.in</a></p>
-        <p><span class="highlight">WhatsApp:</span> +91 72028 68675</p>
-        <p><span class="highlight">Contact:</span> Reach us anytime for affordable and diverse stationery!</p>
-        <p>Simple. Affordable. Reliable.</p>
-        <p><span class="highlight">50% off</span> your first order with code <span class="highlight">WELCOME50</span>.</p>
-    </div>
+            // Update output to show movement and direction
+            output.textContent = `Moved: ${deltaX}px (${deltaX > 0 ? 'Right' : 'Left'})`;
+        });
 
-    <!-- Back of the card -->
-    <div class="card back">
-        <p>Callow - Your Go-To Stationery Store</p>
-        <p>Visit: <a href="http://www.callow.in">www.callow.in</a></p>
-        <p>WhatsApp: +91 72028 68675</p>
-    </div>
+        // Stop tracking when the user releases the mouse button
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                change = change + deltaX > 0 ? change + deltaX : 0;
+                isDragging = false; // Stop dragging
+                output.textContent += ' (Stopped)';
+            }
+        });
+    });
+</script>
 
-</body>
-</html>
+<!-- HTML structure -->
+<input type="number" id="precounts" value={precount}>
+<input type="number" id="counts" bind:value={count}>
+<input type="number" id="nextcounts" value={nextcount}>
+<p id="output"></p>
+<p>{change}</p>

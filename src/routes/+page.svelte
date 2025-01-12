@@ -3,7 +3,7 @@
     import Chart, { elements } from 'chart.js/auto';
     import { onMount } from "svelte";
     import './style.css';
-    import { CirclePlus, RefreshCcw } from 'lucide-svelte';
+    import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
     interface ThoughtRecord {
         record: string[];
@@ -187,12 +187,12 @@
             <p class="key">{key}</p>
         </div>
         <div class="buttons">
-            <button onclick={()=>{decrement(key)}}>-</button>
+            <button class="countNegative" onclick={()=>{decrement(key)}}><ChevronLeft /></button>
             <span class="counter">{value.count}</span>
-            <button onclick={()=>{increment(key)}}>+</button>
+            <button class="countPositive" onclick={()=>{increment(key)}}><ChevronRight /></button>
         </div>
     </div>
-{/each}               
+{/each}             
 </div>
 
 <div class="resetContainer">

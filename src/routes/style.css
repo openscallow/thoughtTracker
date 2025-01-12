@@ -127,3 +127,9 @@ body {
     font-size: 20px;
     vertical-align: middle;
 }
+
+.countNegative, .countPositive {
+    border: none;
+    outline: none;
+    background-color: none;
+}

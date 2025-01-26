@@ -4,16 +4,22 @@
     import AllThoughts from "$lib/graphs/all_thoughts.svelte";
     import './style.css';
     import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-svelte';
+    import type { ac } from "vitest/dist/chunks/reporters.D7Jzd9GS.js";
+
+
 
     interface ThoughtRecord {
         record: string[];
         count: number;
     }
 
+    type Status = 'active' | 'inactive';
+
     interface Thoughts {
         [key: string]: {
             count: number;
             records: Record<string, ThoughtRecord>;
+            status: Status;
         };
     }
 
@@ -22,6 +28,7 @@
 
     let thoughts: Thoughts = $state({});
     let newThought: string = $state("");
+    let thoughtsInfo = $state([]);
 
     // let chart: Chart | null = null;
 
@@ -38,10 +45,48 @@
         try {
             const storedThoughts = localStorage.getItem("thoughts");
             thoughts = storedThoughts ? JSON.parse(storedThoughts) : {};
+
+            // insert status property on old thoughts
+            for (const key in thoughts) {
+                if (!Object.hasOwn(thoughts[key], "status")) {
+                    thoughts[key].status = 'active';
+                    $inspect("not count" + thoughts[key]);
+                }
+            }
+            saveThoughts();
+            populateThoughtsInfo();
         } catch (error) {
             console.error("Error parsing thoughts from localStorage", error);
             thoughts = {};
         }
+    }
+
+    function populateThoughtsInfo(): void {
+        thoughtsInfo = Object.entries(thoughts).map(([key, value], index) => ({
+            id: index,
+            name: key,
+            count: value.count,
+            lastUpdate:  Object.keys(value.records).pop(),
+            records: value.records,
+        }));
+
+        inActiveThought()
+    }
+
+    function inActiveThought(){
+        thoughtsInfo.forEach((thought) => {
+            if(thought.lastUpdate === undefined) thought.lastUpdate = date();
+
+            let currentDate = parseInt(date().split("/")[0]);
+            let lastUpdate = parseInt(thought.lastUpdate.split("/")[0]);
+
+            if(currentDate - lastUpdate > 7 && thoughts[thought.name].status === 'active') {
+                alert("Bravo You have beat the thought " + thought.name);
+                thoughts[thought.name].status = 'inactive';
+            }
+        })
+
+        saveThoughts();
     }
 
     function saveThoughts(): void {
@@ -51,7 +96,7 @@
     function addThought(): void {
         if (!newThought.trim()) return;
 
-        thoughts[newThought] = { count: 0, records: {} };
+        thoughts[newThought] = {status:'active', count: 0, records: {} };
         saveThoughts();
         newThought = "";
     }
@@ -109,6 +154,7 @@
         localStorage.setItem("selectedYear", year.value);
         window.location.reload();
     }
+
 </script>
 <svelte:head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,6 +170,7 @@
 
 <div class="grid">
 {#each Object.entries(thoughts) as [key, value]}
+{#if value.status === 'active'}
     <div class="card">
         <div class="newThought">
             <p class="key">{key}</p>
@@ -134,6 +181,7 @@
             <button class="countPositive" onclick={()=>{increment(key)}}><ChevronRight /></button>
         </div>
     </div>
+{/if}
 {/each}             
 </div>
 
@@ -158,3 +206,4 @@
 <div style="width: 100%; max-width: 600px; margin: auto;">
     <AllThoughts {thoughts} {selectedMonth} {selectedYear} />
 </div>
+

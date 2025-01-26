@@ -133,3 +133,13 @@ body {
     outline: none;
     background-color: none;
 }
+
+.graph-container {
+    width: 100%;
+    padding: 1rem;
+    background: var(--background-color);
+    backdrop-filter: blur(30px);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    margin-top: 1rem;
+}

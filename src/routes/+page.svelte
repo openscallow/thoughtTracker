@@ -1,7 +1,7 @@
 <script lang="ts">
     import { date } from "$lib/date";
-    import Chart, { elements } from 'chart.js/auto';
     import { onMount } from "svelte";
+    import AllThoughts from "$lib/graphs/all_thoughts.svelte";
     import './style.css';
     import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
@@ -23,7 +23,7 @@
     let thoughts: Thoughts = $state({});
     let newThought: string = $state("");
 
-    let chart: Chart | null = null;
+    // let chart: Chart | null = null;
 
     // Helper to initialize `localStorage`
     function initializeStorage(): void {
@@ -94,66 +94,8 @@
 
     onMount(() => {
         initializeStorage();
-        selectedMonth = parseInt(localStorage.getItem("selectedMonth") ?? selectedYear.toString());
+        selectedMonth = parseInt(localStorage.getItem("selectedMonth") ?? selectedMonth.toString());
         selectedYear = parseInt(localStorage.getItem("selectedYear") ?? selectedYear.toString());
-
-        const data = Array.from({ length: 31 }, (_, i) => ({
-            date: i + 1,
-            count: null as number | null,
-        }));
-
-        for (const key in thoughts) {
-            if (Object.prototype.hasOwnProperty.call(thoughts, key)) {
-                for (const secondKey in thoughts[key].records) {
-                    const [day, month, year] = secondKey.split("/").map(Number);
-                    console.log(month, selectedMonth, year, selectedYear);
-                    if (month === selectedMonth && year === selectedYear) {
-                        const dataEntry = data.find((d) => d.date === day);
-                        if (dataEntry) {
-                            dataEntry.count = (dataEntry.count || 0) + thoughts[key].records[secondKey].count;
-                        }
-                    }
-                }
-            }
-        }
-
-        const thoughtVisual = document.getElementById("lineChart") as HTMLCanvasElement | null;
-        if (thoughtVisual) {
-            chart = new Chart(thoughtVisual, {
-                type: "bar",
-                data: {
-                    labels: data.map((row) => row.date.toString()),
-                    datasets: [
-                        {
-                            label: "Daily Counts",
-                            data: data.map((row) => row.count),
-                            backgroundColor: "rgba(75, 192, 192, 0.2)",
-                            borderColor: "rgba(75, 192, 192, 1)",
-                            borderWidth: 1,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "top" },
-                        tooltip: { enabled: true },
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { autoSkip: true },
-                        },
-                        y: { beginAtZero: true },
-                    },
-                    layout: {
-                        padding: { top: 10, left: 10, right: 10, bottom: 10 },
-                    },
-                },
-            });
-        } else {
-            console.error('Canvas element with id "lineChart" not found.');
-        }
     });
 
     function upDateMonth() {
@@ -212,6 +154,7 @@
     <option value="2025">2025</option>
 </select>
 {selectedYear}
+
 <div style="width: 100%; max-width: 600px; margin: auto;">
-    <canvas id="lineChart"></canvas>
+    <AllThoughts {thoughts} {selectedMonth} {selectedYear} />
 </div>

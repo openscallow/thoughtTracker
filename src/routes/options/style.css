@@ -3,6 +3,7 @@
     gap: 1rem;
     margin: 1rem;
     align-items: center;
+    /* background-color: aqua; */
 }
 
 input[type="text"] {

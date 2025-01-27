@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { date } from "$lib/date";
+    import './style.css'
 
     interface ThoughtRecord {
         record: string[];
@@ -57,6 +58,9 @@
 
     // }
 </script>
+
+
+
 <!-- Ui for disable thoughts and restore button -->
 {#each disableThought as thought}
     <div id="container">

@@ -47,16 +47,6 @@
         localStorage.setItem("thoughts", JSON.stringify(thoughts));
         window.location.reload
     }
-
-    // /////////unexpected behavior of js
-    // function restore(thought){
-    //     // thought.status = 'active';
-    //     // let thoughtName = thought[0]
-    //     console.log(thoughts[thought][0])
-        
-    //     console.log(date())
-
-    // }
 </script>
 
 

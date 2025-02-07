@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import AllThoughts from "$lib/graphs/all_thoughts.svelte";
     import './style.css';
-    import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-svelte';
+    import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight, EllipsisVertical } from 'lucide-svelte';
     import type { ac } from "vitest/dist/chunks/reporters.D7Jzd9GS.js";
 
 
@@ -26,11 +26,10 @@
     let selectedMonth: number = $state(12); // December
     let selectedYear: number = $state(2024); 
 
-    let thoughts: Thoughts = $state({});
+    let thoughts: Thoughts = $state({});  // it should replace it with thoughtInfo variable
     let newThought: string = $state("");
     let thoughtsInfo = $state([]);
 
-    // let chart: Chart | null = null;
 
     // Helper to initialize `localStorage`
     function initializeStorage(): void {
@@ -100,7 +99,8 @@
         saveThoughts();
         newThought = "";
     }
-
+    
+    // increment and decrement functions
     function increment(key: string): void {
         const currentDate = date();
         const record = thoughts[key].records[currentDate] || { record: [], count: 0 };
@@ -128,6 +128,7 @@
         saveThoughts();
     }
 
+    // reset function
     function reset(): void {
         for (const key in thoughts) {
             if (Object.prototype.hasOwnProperty.call(thoughts, key)) {
@@ -155,6 +156,11 @@
         window.location.reload();
     }
 
+    function showProperties(index: number) {
+        let properties = document.querySelector(`.thought${index}`) as HTMLElement;
+        properties.classList.toggle("show");
+    }
+
 </script>
 <svelte:head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,16 +175,22 @@
 </div>
 
 <div class="grid">
-{#each Object.entries(thoughts) as [key, value]}
-{#if value.status === 'active'}
+{#each thoughtsInfo as thought, index}
+{#if thoughts[thought.name].status === 'active'}
     <div class="card">
-        <div class="newThought">
-            <p class="key">{key}</p>
+        <div class="newThought"> 
+            <p class="key">{thought.name}</p>
         </div>
         <div class="buttons">
-            <button class="countNegative" onclick={()=>{decrement(key)}}><ChevronLeft /></button>
-            <span class="counter">{value.count}</span>
-            <button class="countPositive" onclick={()=>{increment(key)}}><ChevronRight /></button>
+            <button class="countNegative" onclick={()=>{decrement(thought.name)}}><ChevronLeft /></button>
+            <span class="counter">{thought.count}</span>
+            <button class="countPositive" onclick={()=>{increment(thought.name)}}><ChevronRight /></button>
+        </div>
+        <button class="dots" onclick={()=>showProperties(index)}><EllipsisVertical /></button>
+        <div class="properties thought{index}">
+            <ul>
+                <li>last Update: {thought.lastUpdate}</li>
+            </ul>
         </div>
     </div>
 {/if}

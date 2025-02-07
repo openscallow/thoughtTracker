@@ -98,6 +98,7 @@
         thoughts[newThought] = {status:'active', count: 0, records: {} };
         saveThoughts();
         newThought = "";
+        populateThoughtsInfo();
     }
     
     // increment and decrement functions
@@ -111,6 +112,7 @@
         thoughts[key].count += 1;
 
         saveThoughts();
+        populateThoughtsInfo();
     }
 
     function decrement(key: string): void {
@@ -126,6 +128,7 @@
         thoughts[key].count = Math.max(0, thoughts[key].count - 1);
 
         saveThoughts();
+        populateThoughtsInfo();
     }
 
     // reset function

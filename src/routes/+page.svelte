@@ -71,20 +71,51 @@
 
         inActiveThought()
     }
-
-    function inActiveThought(){
+  
+    /*
+      inActiveThought function determines if a thought should be marked inactive.
+      It compares the last update date (format "DD/MM/YYYY") with the current date (same format).
+      
+      Test Cases:
+      - If lastUpdated = "7/1/2025" and currentDate = "7/2/2025", the thought should be marked inactive
+        because the difference is more than 7 days.
+      - If lastUpdated = "30/1/2025" and currentDate = "1/2/2025", the thought should remain active
+        because the difference is less than or equal to 7 days.
+    */
+    export function inActiveThought(){
+        // Helper to convert "DD/MM/YYYY" string to a JavaScript Date object.
+        function parseDate(str: string): Date {
+            const [day, month, year] = str.split('/').map(Number);
+            return new Date(year, month - 1, day);
+        }
+    
         thoughtsInfo.forEach((thought) => {
-            if(thought.lastUpdate === undefined) thought.lastUpdate = date();
-
-            let currentDate = parseInt(date().split("/")[0]);
-            let lastUpdate = parseInt(thought.lastUpdate.split("/")[0]);
-
-            if(currentDate - lastUpdate > 7 && thoughts[thought.name].status === 'active') {
+            // If lastUpdate is undefined, initialize it to the current date.
+            if (!thought.lastUpdate) {
+                thought.lastUpdate = date();
+            }
+    
+            // Get current date and last update as strings.
+            const currentDateStr = date();
+            const lastUpdateStr = thought.lastUpdate;
+    
+            // Parse the date strings into Date objects.
+            const currentDateObj = parseDate(currentDateStr);
+            const lastUpdateObj = parseDate(lastUpdateStr);
+    
+            // Calculate difference in days.
+            const diffTime = currentDateObj.getTime() - lastUpdateObj.getTime();
+            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    
+            console.log(`Name: ${thought.name} | Current Date: ${currentDateStr} | Last Update: ${lastUpdateStr} | Diff Days: ${diffDays}`);
+    
+            // If the difference exceeds 7 days and the thought is active, mark it as inactive.
+            if(diffDays > 7 && thoughts[thought.name].status === 'active') {
                 alert("Bravo You have beat the thought " + thought.name);
                 thoughts[thought.name].status = 'inactive';
             }
-        })
-
+        });
+    
         saveThoughts();
     }
 

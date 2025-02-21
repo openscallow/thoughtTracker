@@ -3,10 +3,12 @@
     import { onMount } from "svelte";
     import AllThoughts from "$lib/graphs/all_thoughts.svelte";
     import './style.css';
-    import { CirclePlus, RefreshCcw, ChevronLeft, ChevronRight, EllipsisVertical } from 'lucide-svelte';
-    import type { ac } from "vitest/dist/chunks/reporters.D7Jzd9GS.js";
-
-
+    import { 
+        CirclePlus, 
+        RefreshCcw, 
+        ChevronLeft, 
+        ChevronRight, 
+        EllipsisVertical } from 'lucide-svelte';
 
     interface ThoughtRecord {
         record: string[];
@@ -23,10 +25,10 @@
         };
     }
 
-    let selectedMonth: number = $state(12); // December
+    let selectedMonth: number = $state(12); 
     let selectedYear: number = $state(2024); 
 
-    let thoughts: Thoughts = $state({});  // it should replace it with thoughtInfo variable
+    let thoughts: Thoughts = $state({});  
     let newThought: string = $state("");
     let thoughtsInfo = $state([]);
 
@@ -71,17 +73,15 @@
 
         inActiveThought()
     }
-  
-    /*
-      inActiveThought function determines if a thought should be marked inactive.
-      It compares the last update date (format "DD/MM/YYYY") with the current date (same format).
-      
-      Test Cases:
-      - If lastUpdated = "7/1/2025" and currentDate = "7/2/2025", the thought should be marked inactive
-        because the difference is more than 7 days.
-      - If lastUpdated = "30/1/2025" and currentDate = "1/2/2025", the thought should remain active
-        because the difference is less than or equal to 7 days.
-    */
+
+    /**
+     * Checks and updates the status of thoughts based on inactivity period.
+     * Iterates through all thoughts, calculating the time difference between
+     * their last update and current date. If a thought hasn't been updated
+     * for more than 7 days and is currently active, it's marked as inactive.
+     * Displays an alert when a thought becomes inactive and saves the updated
+     * thought status.
+     */
     export function inActiveThought(){
         // Helper to convert "DD/MM/YYYY" string to a JavaScript Date object.
         function parseDate(str: string): Date {
@@ -220,12 +220,15 @@
             <span class="counter">{thought.count}</span>
             <button class="countPositive" onclick={()=>{increment(thought.name)}}><ChevronRight /></button>
         </div>
-        <button class="dots" onclick={()=>showProperties(index)}><EllipsisVertical /></button>
-        <div class="properties thought{index}">
-            <ul>
-                <li>last Update: {thought.lastUpdate}</li>
-            </ul>
+        <div class="propetieWrapper">
+            <button class="dots" onclick={()=>showProperties(index)}><EllipsisVertical /></button>
+            <div class="properties thought{index}">
+                <ul>
+                    <li>last Update: {thought.lastUpdate}</li>
+                </ul>
+            </div>
         </div>
+            
     </div>
 {/if}
 {/each}             

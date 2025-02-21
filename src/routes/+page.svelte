@@ -66,7 +66,7 @@
         thoughtsInfo = Object.entries(thoughts).map(([key, value], index) => ({
             id: index,
             name: key,
-            count: value.count,
+            count: Object.values(value.records).reduce((sum, record) => sum + record.count, 0),
             lastUpdate:  Object.keys(value.records).pop(),
             records: value.records,
         }));
@@ -225,6 +225,7 @@
             <div class="properties thought{index}">
                 <ul>
                     <li>last Update: {thought.lastUpdate}</li>
+                    <li>total count: {thought.count}</li>
                 </ul>
             </div>
         </div>

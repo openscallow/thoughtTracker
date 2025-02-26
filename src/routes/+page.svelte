@@ -2,6 +2,7 @@
     import { date } from "$lib/date";
     import { onMount } from "svelte";
     import AllThoughts from "$lib/graphs/all_thoughts.svelte";
+    import { Property } from "$lib/index"
     import './style.css';
     import { 
         CirclePlus, 
@@ -191,10 +192,7 @@
         window.location.reload();
     }
 
-    function showProperties(index: number) {
-        let properties = document.querySelector(`.thought${index}`) as HTMLElement;
-        properties.classList.toggle("show");
-    }
+    
 
 </script>
 <svelte:head>
@@ -221,16 +219,7 @@
             <span class="counter">{thought.count}</span>
             <button class="countPositive" onclick={()=>{increment(thought.name)}}><ChevronRight /></button>
         </div>
-        <div class="propetieWrapper">
-            <button class="dots" onclick={()=>showProperties(index)}><EllipsisVertical /></button>
-            <div class="properties thought{index}">
-                <ul>
-                    <li>last Update: {thought.lastUpdate}</li>
-                    <li>total count: {thought.totalCount}</li>
-                </ul>
-            </div>
-        </div>
-            
+        <Property index={index} lastUpdate={thought.lastUpdate} totalCount={thought.totalCount} /> 
     </div>
 {/if}
 {/each}             

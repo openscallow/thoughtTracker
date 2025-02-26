@@ -91,36 +91,6 @@ body {
     height: 40px;
 }
 
-.card > .propetieWrapper{
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row-reverse;
-    background-color: violet;
-}
-
-.properties ul li {
-    list-style-type: none;
-}
-
-.propetieWrapper .dots{ 
-    border: none;
-    cursor: pointer;
-    background: none;
-}
-
-.propetieWrapper .properties{
-    display: none;
-    padding: 0.5em;
-    margin-top: 0.2em;
-    background-color: white;
-}
-
-.properties.show{
-    display: block;
-}
-
 .counter {
     display: inline-block;
     width: 3ch;
